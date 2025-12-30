@@ -1,0 +1,138 @@
+{% extends 'books/base.html' %}
+
+{% block title %}Literary Chat - Choose a Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .intro-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px;
+        border-radius: 12px;
+        margin-bottom: 40px;
+    }
+    .intro-section h2 {
+        font-size: 1.8em;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+    .intro-section p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        opacity: 0.95;
+    }
+    .suggested-questions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .question-tag {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        cursor: pointer;
+        transition: all 0.2s;
+        backdrop-filter: blur(10px);
+    }
+    .question-tag:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 24px;
+    }
+    .book-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 28px;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    .book-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        border-color: #667eea;
+    }
+    .book-title {
+        font-size: 1.5em;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+    .book-author {
+        color: #6c757d;
+        margin-bottom: 16px;
+        font-size: 1em;
+    }
+    .book-description {
+        color: #495057;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+    .book-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+    }
+    .book-tag {
+        background: #f8f9fa;
+        color: #495057;
+        border: 1px solid #e9ecef;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.85em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>💬 Literary Chat</h1>
+
+<div class="intro-section">
+    <h2>Chat with Classic Characters</h2>
+    <p>Explore literature through conversation. Ask characters about their world, motivations, and experiences using AI.</p>
+    
+    <div class="suggested-questions">
+        <span class="question-tag">💭 What are your deepest fears?</span>
+        <span class="question-tag">💡 What drives your decisions?</span>
+        <span class="question-tag">💔 What is your greatest regret?</span>
+        <span class="question-tag">✨ What brings you joy?</span>
+        <span class="question-tag">🤔 How do you view society?</span>
+    </div>
+</div>
+
+<div class="book-grid">
+    {% for book in books %}
+    <a href="{% url 'books:book_detail' book.id %}" style="text-decoration: none; color: inherit;">
+        <div class="book-card">
+            <div class="book-title">{{ book.title }}</div>
+            <div class="book-author">{{ book.author }}</div>
+            <div class="book-description">{{ book.description }}</div>
+            
+            <div class="book-tags">
+                {% if "Pride" in book.title %}
+                    <span class="book-tag">Romance</span>
+                    <span class="book-tag">Social Commentary</span>
+                {% elif "Frankenstein" in book.title %}
+                    <span class="book-tag">Gothic</span>
+                    <span class="book-tag">Science Fiction</span>
+                {% elif "Christmas" in book.title %}
+                    <span class="book-tag">Victorian</span>
+                    <span class="book-tag">Redemption</span>
+                {% endif %}
+            </div>
+        </div>
+    </a>
+    {% empty %}
+    <p>No books available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

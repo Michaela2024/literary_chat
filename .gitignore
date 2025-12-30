@@ -1,0 +1,7 @@
+﻿.env
+*.pyc
+__pycache__/
+db.sqlite3
+vector_stores/
+media/
+*.log

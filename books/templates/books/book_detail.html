@@ -1,0 +1,110 @@
+{% extends 'books/base.html' %}
+
+{% block title %}{{ book.title }} - Characters{% endblock %}
+
+{% block extra_css %}
+<style>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 24px;
+        color: #6c757d;
+        font-size: 0.95em;
+        transition: color 0.2s;
+    }
+    .back-link:hover {
+        color: #495057;
+    }
+    .book-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 32px;
+        border-radius: 12px;
+        margin-bottom: 32px;
+    }
+    .book-header h1 {
+        color: white;
+        margin-bottom: 8px;
+    }
+    .book-header p {
+        opacity: 0.95;
+        font-size: 1.1em;
+    }
+    .section-title {
+        font-size: 1.5em;
+        color: #1a1a1a;
+        margin-bottom: 24px;
+        font-weight: 600;
+    }
+    .character-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+    }
+    .character-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 28px;
+        transition: all 0.2s;
+    }
+    .character-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        border-color: #667eea;
+    }
+    .character-name {
+        font-size: 1.4em;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+    .character-description {
+        color: #495057;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    .chat-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        width: 100%;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+    .chat-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{% url 'books:home' %}" class="back-link">← Back to Books</a>
+
+<div class="book-header">
+    <h1>{{ book.title }}</h1>
+    <p>by {{ book.author }} • {{ book.publication_year }}</p>
+</div>
+
+<h2 class="section-title">Choose a Character</h2>
+
+<div class="character-grid">
+    {% for character in characters %}
+    <div class="character-card">
+        <div class="character-name">{{ character.name }}</div>
+        <div class="character-description">{{ character.description|truncatewords:30 }}</div>
+        <a href="{% url 'books:chat' character.id %}" style="text-decoration: none;">
+            <button class="chat-button">Start Conversation →</button>
+        </a>
+    </div>
+    {% empty %}
+    <p>No characters available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}
