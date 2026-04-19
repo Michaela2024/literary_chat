@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings
@@ -53,11 +54,13 @@ def generate_speech_audio(text, character, conversation_id):
     """
     try:
         # Clean the text before generating speech
-        cleaned_text = text.replace('*', '')  # Remove asterisks
-        cleaned_text = cleaned_text.replace('_', '')  # Remove underscores
-        cleaned_text = cleaned_text.replace('"', '')  # Remove quotes
-        cleaned_text = cleaned_text.replace("'", '')  # Remove apostrophes in quotes
-        cleaned_text = ' '.join(cleaned_text.split())  # Normalize whitespace
+        if isinstance(text, list):
+            text = ' '.join(str(t) for t in text)
+        cleaned_text = text.replace('*', '')
+        cleaned_text = cleaned_text.replace('_', '')
+        cleaned_text = cleaned_text.replace('"', '')
+        cleaned_text = cleaned_text.replace("'", '')
+        cleaned_text = ' '.join(cleaned_text.split())
         
         # Create cache directory
         cache_dir = Path(settings.MEDIA_ROOT) / 'tts_cache'
@@ -92,7 +95,7 @@ def generate_speech_audio(text, character, conversation_id):
         
         print(f"🎙️ Using voice: {voice_name} for {character.name}")
         
-        # Set the text input with cleaned text
+        # Set the text input
         synthesis_input = texttospeech.SynthesisInput(text=cleaned_text)
         
         # Select audio format
@@ -121,7 +124,7 @@ def generate_speech_audio(text, character, conversation_id):
         print(f"❌ TTS Error: {str(e)}")
         import traceback
         traceback.print_exc()
-        return Nonepty
+        return None
 
 def send_message(request, conversation_id):
     """Handle sending a message and getting response"""
@@ -139,7 +142,6 @@ def send_message(request, conversation_id):
             content=user_message
         )
         
-        # 
         # Get character response
         character_response = query_character(
             conversation.character,
@@ -178,10 +180,8 @@ def delete_conversation(request, conversation_id):
             conversation = get_object_or_404(Conversation, id=conversation_id)
             character_id = conversation.character.id
             
-            # Delete the conversation (messages are deleted automatically via CASCADE)
             conversation.delete()
             
-            # Clear the session
             if 'session_id' in request.session:
                 del request.session['session_id']
             

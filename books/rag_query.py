@@ -19,7 +19,7 @@ def query_character(character, user_message, conversation_history=None):
         # 1. Load the vector store for this character's book
         vector_store_path = character.book.vector_store_path
         embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/embedding-001",
+            model="models/gemini-embedding-001",
             google_api_key=settings.GOOGLE_API_KEY
         )
         vector_store = FAISS.load_local(
@@ -63,7 +63,10 @@ Respond directly in character. Do NOT include your character name or labels in y
         )
         response = llm.invoke(prompt)
         
-        return response.content
+        content=response.content
+        if isinstance(content, list):
+            content = ' '.join(item.get('text', '') for item in content if isinstance(item, dict) and item.get('type') == 'text')
+        return content
         
     except Exception as e:
         print(f"Error querying character: {str(e)}")
