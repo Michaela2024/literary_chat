@@ -58,7 +58,7 @@ Respond directly in character. Do NOT include your character name or labels in y
         
         # 4. Generate response
         llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash",
+            model="gemini-3.1-flash-lite-preview",
             google_api_key=settings.GOOGLE_API_KEY
         )
         response = llm.invoke(prompt)
